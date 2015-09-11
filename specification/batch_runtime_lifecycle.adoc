@@ -1,0 +1,651 @@
+== Job Runtime Lifecycle
+
+The following sections describe an ordered flow of artifact method
+invocations. Simple symbols are used to denote actions as follows:
+
+[width="100%",cols="<50%,<50%",]
+|======================================================================
+|Symbol |Meaning
+| <action> |An action performed by the batch runtime.
+| < - > method |Invocation of a batch artifact method by the batch runtime.
+|[method] |Optional method.
+|// comment |Comment to clarify behavior.
+|LABEL: |Label used for flow control comments.
+|======================================================================
+
+=== Batch Artifact Lifecycle
+
+All batch artifacts are instantiated prior to their use in the scope in
+which they are declared in the Job XML and are valid for the life of
+their containing scope. There are three scopes that pertain to artifact
+lifecycle: job, step, and step-partition.
+
+One artifact per Job XML reference is instantiated. In the case of a
+partitioned step, one artifact per Job XML reference per partition is
+instantiated. This means job level artifacts are valid for the life of
+the job. Step level artifacts are valid for the life of the step. Step
+level artifacts in a partition are valid for the life of the partition.
+
+No artifact instance may be shared across concurrent scopes. The same
+instance must be used in the applicable scope for a specific Job XML
+reference.
+
+=== Job Repository Artifact Lifecycle
+
+All job repository artifacts are created by the batch runtime during job
+processing and exist until deleted by an implementation provided means.
+
+=== Job Processsing
+
+1. <Create JobContext>
+
+2. <Store job level properties in JobContext>
+
+3. < - >[JobListener.beforeJob...] // thread A
+
+4. <processs execution elements>
+
+5. < - >[JobListener.afterJob...] // thread A
+
+6. <Destroy JobContext>
+
+=== Regular Batchlet Processsing
+
+1. <Create StepContext>
+
+2. <Store step level properties in StepContext>
+
+3. < - > [StepListener.beforeStep...] // thread A
+
+4. < - > Batchlet.process // thread A
+
+5. // if stop issued:
+
+6. < - >[Batchlet.stop] // thread B, StepContext is available
+
+7. < - >[StepListener.afterStep...] // thread A
+
+8. <Store StepContext persistent area>
+
+9. <Destroy StepContext>
+
+=== Partitioned Batchlet Processsing
+
+1. <Create StepContext>
+
+2. <Store step level properties in StepContext>
+
+3. < - >[StepListener.beforeStep...] // thread A
+
+4. < - >[PartitionReducer.beginPartitionedStep] // thread A
+
+5. < - >[PartitionMapper.mapPartitions] // thread A
+
+6. // per partition:
+
+. < - >Batchlet.process // thread Px
+
+. // if stop issued:
+
+. < - >[Batchlet.stop] // thread Py, StepContext is available
+
+. < - >[PartitionCollector.collectPartitionData] // thread Px
+
+7. // when collector payload arrives:
+
+. < - >[PartitionAnalyzer.analyzeCollectorData] // thread A
+
+9. // when partition ends:
+
+.  < - >[PartitionAnalyzer.analyzeStatus] // thread A
+
+11.  // if rollback condition occurs:
+
+12.  < - >[PartitionReducer.rollbackPartitionedStep] // thread A
+
+13.  < - >[PartitionReducer.beforePartitionedStepCompletion] // thread A
+
+14.  < - >[PartitionReducer.afterPartitionedStepCompletion] // thread A
+
+15.  < - >[StepListener.afterStep...] // thread A
+
+16.  <Store StepContext persistent area>
+
+17.  <Destroy StepContext>
+
+=== Regular Chunk Processing
+
+1. <Create StepContext>
+
+2. <Store step level properties in StepContext>
+
+3. < - >[StepListener.beforeStep...] // thread A
+
+4. [<begin transaction> ]
+
+5. < - >ItemReader.open // thread A
+
+6. < - >ItemWriter.open // thread A
+
+7. [<commit transaction> ]
+
+8. // chunk processing:
+
+9. <repeat until no more items (i.e. while readItem hasn't returned
+'null') > \{
+
+. <begin checkpoint interval [<begin chunk transaction>]>
+
+. <repeat until checkpoint criteria reached OR readItem returns `null`> \{
+..< - >ItemReader.readItem // thread A
+.. // if readItem returns non-null
+... < - >ItemProcessor.processItem // thread A
+... // if processItem returns non-null, <add item to writeItems
+buffer>
+. }
+
+. // if at least one non-null value has been successfully read inthe present chunk
+..< - >ItemWriter.writeItems // thread A
+
+. < - >[ItemReader.checkpointInfo] // thread A
+
+.  < - >[ItemWriter.checkpointInfo] // thread A
+
+. <Store StepContext persistent area>
+
+. [<commit chunk transaction>]
+
+10.  }
+
+11.   [<begin transaction> ]
+
+12.  < - >ItemWriter.close // thread A
+
+13.  < - >ItemReader.close // thread A
+
+14.  [<commit transaction> ]
+
+15.  < - >[StepListener.afterStep...] // thread A
+
+16.  <Store StepContext persistent area>
+
+17.  <Destroy StepContext>
+
+=== Partitioned Chunk Processing
+
+1. <Create StepContext>
+
+2. <Store step level properties in StepContext>
+
+3. < - >[StepListener.beforeStep...] // thread A
+
+4. < - >[PartitionReducer.beginPartitionedStep] // thread A
+
+5. < - >[PartitionMapper.mapPartitions] // thread A+
+ // per partition - on thread Px:
+
+. [<begin transaction> ]
+
+. < - >ItemReader.open // thread Px
+
+. < - >ItemWriter.open // thread Px
+
+. [<commit transaction> ]
+
+. <repeat until no more items (i.e. while readItem hasn't returned
+'null') > \{
+
+.. <begin checkpoint interval [<begin chunk transaction>]>
+.. <repeat until checkpoint criteria reached OR readItem returns 'null'> \{
+... < - >ItemReader.readItem // thread Px
+... // if readItem returns non-null
+.... < - >ItemProcessor.processItem // thread Px
+.... //if processItem returns non-null, <add item to writeItems buffer>
+.. }
+.. //if at least one non-null value has been successfully read in this partition of the present chunk
+
+...  < - >ItemWriter.writeItems // thread Px
+
+..< - >[ItemReader.checkpointInfo] // thread Px
+
+..< - >[ItemWriter.checkpointInfo] // thread Px
+
+.. <Store (partition-local) StepContext persistent area>
+
+.. [<commit chunk transaction>]
+
+.. < - >[PartitionCollector.collectPartitionData] // thread Px
+
+.   }
+
+. [<begin transaction> ]
+
+. < - >ItemWriter.close // thread Px
+
+.  < - >ItemReader.close // thread Px
+
+.  [<commit transaction> ]
+
+6. [<begin transaction> ] // thread A
+
+7. // Actions 9-12 run continuously until all partitions end.
+
+8. // when collector payload arrives:
+
+. < - >[PartitionAnalyzer.analyzeCollectorData] // thread A
+
+10.  // when partition ends:
+
+.  < - >[PartitionAnalyzer.analyzeStatus] // thread A
+
+12.  // Remaining actions run after all partitions end:
+
+13.  // if rollback condition occurs:
+
+.  < - >[PartitionReducer.rollbackPartitionedStep] // thread A
+
+.  [<rollback transaction >]
+
+16.  // else not rollback
+
+17.  < - >[PartitionReducer.beforePartitionedStepCompletion] // thread A
+
+18.  [<commit transaction> ] // thread A
+
+19.  < - >[PartitionReducer.afterPartitionedStepCompletion] // thread A
+
+20.  < - >[StepListener.afterStep...] // thread A
+
+21.  <Store StepContext persistent area>
+
+22.  <Destroy StepContext>
+
+
+=== Chunk with Listeners (except RetryListener)
+
+1. <Create StepContext>
+
+2. <Store step level properties in StepContext>
+
+3. < - >[StepListener.beforeStep...] // thread A
+
+4. [<begin transaction> ]
+
+5. < - >ItemReader.open // thread A
+
+6. < - >ItemWriter.open // thread A
+
+7. [<commit transaction> ]
+
+8. // chunk processing:
+
+9. <repeat until no more items (i.e. while readItem hasn't returned
+'null') > \{
+
+. <begin checkpoint interval [<begin chunk transaction>]>
+
+. < - >[ChunkListener.beforeChunk] // thread A
+
+. <repeat until checkpoint criteria reached OR readItem returns 'null'> {
+
+.. < - >[ItemReadListener.beforeRead] // thread A
+
+.. < - >ItemReader.readItem // thread A
+
+.. < - >[ItemReadListener.afterRead] // thread A
+
+.. // or:
+
+.. \{
+
+.. < - >[ItemReadListener.onReadError] // thread A
+
+.. < - >[SkipListener.onSkipReadItem] // thread A
+
+.. }
+.. // if readItem returns non-null
+... < - >[ItemProcessListener.beforeProcess] // thread A
+... < - >ItemProcessor.processItem // thread A
+... < - >[ItemProcessListener.afterProcess] // thread A
+... //if processItem returns non-null,< add item to writeItems buffer>
+... // or:
+... \{
+... < - >[ItemProcessListener.onProcessError] // thread A
+... < - >[SkipListener.onSkipProcessItem] // thread A
+... }
+.. }
+.. //if at least one non-null value has been successfully read in
+the present chunk
+... < - >[ItemWriteListener.beforeWrite] // thread A
+... < - >ItemWriter.writeItems // thread A
+... < - >[ItemWriteListener.afterWrite] // thread A
+... // or:
+... {
+... < - >[ItemWriteListener.onWriteError] // thread A
+... < - >[SkipListener.onSkipWriteItems] // thread A
+.. }
+
+.  < - >[ChunkListener.afterChunk] // thread A
+
+. < - >[ItemReader.checkpointInfo] // thread A
+
+. < - >[ItemWriter.checkpointInfo] // thread A
+
+.  <Store StepContext persistent area>
+
+.  [<commit chunk transaction>]
+
+10.  }
+
+11.  [<begin transaction> ]
+
+12.  < - >ItemWriter.close // thread A
+
+13.  < - >ItemReader.close // thread A
+
+14.  [<commit transaction> ]
+
+15.  < - >[StepListener.afterStep...] // thread A
+
+16.  <Store StepContext persistent area>
+
+17.  <Destroy StepContext>
+
+=== Chunk with RetryListener
+
+Note rollback processing is also depicted in this section.
+
+1. <Create StepContext>
+
+2. <Store step level properties in StepContext>
+
+3. < - >[StepListener.beforeStep...] // thread A
+
+4. [<begin transaction> ]
+
+5. < - >ItemReader.open // thread A
+
+6. < - >ItemWriter.open // thread A
+
+7. [<commit transaction> ]
+
+8. // chunk processing:
+
+9. <repeat until no more items (i.e. while readItem hasn't returned
+'null') > \{
+
+. S1:
+
+. <begin checkpoint interval [<begin chunk transaction>]>
+
+. <repeat until checkpoint criteria reached OR readItem returns
+'null'> \{
+
+.. S2:
+
+.. < - >ItemReader.readItem // thread A
+
+.. // if exception
+
+.. < - >[ItemReadListener.onReadErrror] // thread A
+
+.. < - >[RetryReadListener.onRetryReadException] // thread A
+
+.. // if retryable exception
+
+.. // if no-rollback exception
+
+.. resume S2:
+
+.. // else
+
+.. <end repeat>
+
+.. // else
+
+.. <end repeat>
+
+.. S3:
+
+.. // if readItem
+
+.. returns non-null
+
+.. < - >ItemProcessor.processItem // thread A
+
+.. // if exception
+
+.. < - >[ItemProcessListener.onProcessErrror] // thread A
+
+.. < - >[RetryProcessListener.onRetryProcessException] // thread A
+
+.. // if retryable exception
+
+.. // if no-rollback exception
+
+.. resume S3:
+
+.. // else
+
+.. <end repeat>
+
+.. // else
+
+.. <end repeat>
+
+.. // if processItem returns non-null, <add item to writeItems buffer>
+
+. }
+
+. // if rollback exception, execute rollback procedure (below) and
+resume at S1 with item-count=1
+
+.  S4:
+
+. // if at least one non-null value has been successfully read in
+the present chunk
+
+.   < - >ItemWriter.writeItems (buffer) //
+thread A
+
+.  // if exception
+
+.  < - >[ItemWriteListener.onWriteErrror] // thread A
+
+. < - >[RetryWriteListener.onRetryWriteException] // thread A
+
+.  // if retryable exception
+
+.   // if no-rollback exception
+
+. resume S4:
+
+. // else
+
+. execute rollback procedure (below) and resume S1:
+
+. // else execute rollback procedure (below) and resume S1:
+
+.  < - >[ItemReader.checkpointInfo] // thread A
+
+. < - >[ItemWriter.checkpointInfo] // thread A
+
+.  <Store StepContext persistent area> // thread A
+
+. S5:
+
+. [<commit chunk transaction>] // thread A
+
+.    // if exception
+
+. // if retryable exception
+
+. // if no-rollback exception:
+
+.  resume S5:
+
+.  // else
+
+.  execute rollback procedure (below) and resume S1:
+
+.   // else execute rollback procedure (below) and resume S1:
+
+10.  }
+
+11.  [<begin transaction> ]
+
+12.  < - >ItemWriter.close // thread A
+
+13.  < - >ItemReader.close // thread A
+
+14.  [<commit transaction> ]
+
+15.  < - >[StepListener.afterStep...] // thread A
+
+16.  <Store StepContext persistent area>
+
+17.  <Destroy StepContext>
+
+
+
+*Rollback Procedure*
+
+1. < - >ItemWriter.close // thread A
+
+2. < - >ItemReader.close // thread A
+
+3. [ChunkListener.onError] // thread A
+
+1.  [rollback transaction]
+
+5. [<begin transaction> ]
+
+6. < - >ItemWriter.open // thread A, pass last committed checkpoint
+info
+
+7. < - >ItemReader.open // thread A, pass last committed checkpoint
+info
+
+8. [<commit transaction> ]
+
+=== Chunk with Custom Checkpoint Processing
+
+1. <Create StepContext>
+
+2. <Store step level properties in StepContext>
+
+3. < - >[StepListener.beforeStep...] // thread A
+
+4. [<begin transaction> ]
+
+5. < - >ItemReader.open // thread A
+
+6. < - >ItemWriter.open // thread A
+
+7. [<commit transaction> ]
+
+8. // chunk processing:
+
+9. <repeat until no more items (i.e. while readItem hasn't returned
+'null') > \{
+
+a. [
+
+b. < - >[CheckpointAlgorithm.checkpointTimeout]] // thread A
+
+c. < - >[CheckpointAlgorithm.beginCheckpoint] // thread A
+
+d. <begin checkpoint interval [<begin chunk transaction>]>
+
+e. ]
+
+f.  <repeat until isReadyToCheckpoint returns 'true' OR readItem
+returns 'null'> \{
+
+                                               i.
+< - >ItemReader.readItem // thread A
+
+                                             ii. // if readItem
+returns non-null
+
+1. < - >ItemProcessor.processItem // thread A
+
+2. //if processItem returns non-null, <add item to writeItems
+buffer>
+
+                                            iii.
+< - >CheckpointAlgorithm.isReadyToCheckpoint // thread A
+
+g.  }
+
+h. //if at least one non-null value has been successfully read in
+the present chunk
+
+                                               i.
+ < - >ItemWriter.writeItems // thread A
+
+i.  < - >[ItemReader.checkpointInfo] // thread A
+
+j.  < - >[ItemWriter.checkpointInfo] // thread A
+
+k. <Store StepContext persistent area>
+
+l.  [<commit chunk transaction>]
+
+m.   < - >[CheckpointAlgorithm.endCheckpoint] // thread A
+
+10.  }
+
+11.  [<begin transaction> ]
+
+12.  < - >ItemWriter.close // thread A
+
+13.  < - >ItemReader.close // thread A
+
+14.  [<commit transaction> ]
+
+15.  < - >[StepListener.afterStep...] // thread A
+
+16.  <Store StepContext persistent area>
+
+17.  <Destroy StepContext>
+=== Split Processing
+
+1. // For each flow:
+
+2. <run flow> // thread Fx
+
+=== Flow Processing
+
+1. // For each split or step:
+
+2. <run split or step> // thread Xy
+
+=== Stop Processing
+
+The JobOperator.stop operation stops a running job execution. If a step
+is running at the time the stop is invoked, the batch runtime takes the
+following actions:
+
+Chunk Step
+
+The job and step batch status is marked STOPPING. Note the batch runtime
+cannot guarantee the step actually exits. The batch runtime attempts to
+interrupt the read/process/write chunk processing loop. The batch
+runtime allows the step to finish processing the current item. This
+means the current item is read, processed if a processor is configured,
+and all currently buffered items, if any, including the current item,
+are written. If the batch artifacts configured on the chunk type step
+return to the batch runtime, as expected, the job and step batch status
+is marked STOPPED.
+
+ Batchlet Step
+
+The job and step batch status is marked STOPPING. The batch runtime
+invokes the batchlet's stop method. Note the batch runtime cannot
+guarantee the batchlet actually exits. But a well behaved batchlet will.
+If the batchlet returns to the batch runtime, the job and step batch
+status is marked STOPPED.
+
+Note for partitioned batchlet steps the Batchlet stop method is invoked
+on each thread actively processing a partition.
