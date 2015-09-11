@@ -37,3 +37,10 @@ XML code blocks can be wrapped similarly, and the JSL examples and snippets stil
 The conversion to AsciiDoc was largely automated, but some more complex sections of the specification needed to be reworked manually. This applies especially to the Job Runtime Lifecycle section (job_runtime_lifecycle.adoc). 
 
 Each section should be carefully reviewed against the [the Maintenance Release Specification](https://jcp.org/aboutJava/communityprocess/mrel/jsr352/index.html)
+
+### Psuedo Code Blocks
+
+The subsections under job_runtime_lifecycle.adoc contain psuedo-code descriptions, which were represented as a nested-list 
+structure in the original specification document. This didn't translate well into AsciiDoc. It looks bad in text, and renders slightly different than the original document.
+
+I tried my best to ensure the nested levels all match, so it flows the same. But I would very much like to see these Psuedo Code elements re-written into a more readable form.
