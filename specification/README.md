@@ -12,3 +12,13 @@ instead of palcing the include in-line... this makes it look terrible when viewe
 
 If you clone this repository and render the document using AsciiDocter, you'll get one comprehensive specification document, 
 complete with table of contents.
+
+## Outstanding Tasks
+
+I have been running the Java source examples through a pretty printer, and wrapping them with AsciiDoc app-listing macros.
+
+    [[app-listing]]
+    [source,java]
+    ----
+    // Java Code Goes Here...
+    ----
