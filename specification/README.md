@@ -15,10 +15,25 @@ complete with table of contents.
 
 ## Outstanding Tasks
 
-I have been running the Java source examples through a pretty printer, and wrapping them with AsciiDoc app-listing macros.
+### Code Wrapping
+I have been running the Java source examples through a pretty printer, and wrapping them with AsciiDoc app-listing macros. When I do each block, I run the code through a pretty-printer, so it appears consistent and clean.
 
     [[app-listing]]
     [source,java]
     ----
     // Java Code Goes Here...
     ----
+
+XML code blocks can be wrapped similarly, and the JSL examples and snippets still need to be wrapped.
+
+    [[app-listing]]
+    [source,xml]
+    ----
+    <!-- XML Document Goes Here -->
+    ----
+
+### Verification Against the Spec
+
+The conversion to AsciiDoc was largely automated, but some more complex sections of the specification needed to be reworked manually. This applies especially to the Job Runtime Lifecycle section (job_runtime_lifecycle.adoc). 
+
+Each section should be carefully reviewed against the [the Maintenance Release Specification](https://jcp.org/aboutJava/communityprocess/mrel/jsr352/index.html)
