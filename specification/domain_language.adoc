@@ -5,13 +5,12 @@ processing used by JSR 352 should be familiar and comfortable. There are
 ItemReaders and ItemWriters. However, because of the JSR 352 operations,
 callbacks, and idioms, there are opportunities for the following:
 
-a. significant improvement in adherence to a clear separation of
+[loweralpha]
+. significant improvement in adherence to a clear separation of
 concerns
-
-a. clearly delineated architectural layers and services provided as
+. clearly delineated architectural layers and services provided as
 interfaces
-
-a. significantly enhanced extensibility
+. significantly enhanced extensibility
 
 The diagram below is a simplified version of the batch reference
 architecture that has been used for decades. It provides an overview of

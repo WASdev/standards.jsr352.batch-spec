@@ -11,17 +11,15 @@ Applications that do so risk undefined behavior.
 
 The batch runtime supports the following chunk-type step metrics:
 
-1.  readCount - the number of items successfully read.
-2.  writeCount - the number of items successfully written.
-3.  filterCount - the number of items filtered by ItemProcessor.
-4.  commitCount - the number of transactions committed.
-5.  rollbackCount - the number of transactions rolled back.
-6.  readSkipCount - the number of skippable exceptions thrown by the
-ItemReader.
-7.  processSkipCount - the number of skippable exceptions thrown by the
-ItemProcessor.
-8.  writeSkipCount - the number of skippable exceptions thrown by the
-ItemWriter.
+[arabic]
+.  readCount - the number of items successfully read.
+.  writeCount - the number of items successfully written.
+.  filterCount - the number of items filtered by ItemProcessor.
+.  commitCount - the number of transactions committed.
+.  rollbackCount - the number of transactions rolled back.
+.  readSkipCount - the number of skippable exceptions thrown by the ItemReader.
+.  processSkipCount - the number of skippable exceptions thrown by the ItemProcessor.
+.  writeSkipCount - the number of skippable exceptions thrown by the ItemWriter.
 
 These metrics are available through the StepExecution runtime object.
 See section 10.9.10 for further information on StepExecution.
@@ -204,15 +202,12 @@ See section 8.8.1.8 Job Restart Rule.
 On the initial execution of a JobInstance, the sequence of execution is
 essentially:
 
-1. Start at initial execution element
-
-1. Execute the current execution element
-
-1. Either:
-
-. Transition to next execution element (and go to step 2. above) OR
-
-. Terminate execution
+[arabic]
+. Start at initial execution element
+. Execute the current execution element
+. Either:
+.. Transition to next execution element (and go to step 2. above) OR
+.. Terminate execution
 
 On a restart, i.e. a subsequent execution of a JobInstance, the sequence
 of execution is similar, but the batch implementation must, in addition,
@@ -220,15 +215,12 @@ determine which steps it does and does not need to re-execute.
 
 So on a restart, the sequence of execution looks like:
 
-1. Start at restart position
-
-1. Decide whether or not to execute (or re-execute) the current execution element
-
-1. Either:
-
-. Transition to next execution element (and go to step 2. above) OR
-
- . Terminate execution
+[arabic]
+. Start at restart position
+. Decide whether or not to execute (or re-execute) the current execution element
+. Either:
+.. Transition to next execution element (and go to step 2. above) OR
+.. Terminate execution
 
 So it follows that for restart we need: a definition of where in the job
 definition to begin; rules for deciding whether or not to execute the
@@ -240,26 +232,23 @@ provided below.
 ==== Execution Sequence on Restart – Detailed Rules
 Upon restart, the job is processed as follows:
 
-1. Job XML Substitution is performed (see section 8.8).
-
-1. Start by setting the current position to the restart position. The restart position is either:
-
-. the execution element identified by the <stop> elements "restart"
+[arabic]
+. Job XML Substitution is performed (see section 8.8).
+. Start by setting the current position to the restart position. The restart position is either:
+.. the execution element identified by the <stop> elements "restart"
 attribute if that is how the previous execution ended; else
-. the initial execution element determined the same as upon initial
+.. the initial execution element determined the same as upon initial
 job start, as described in section 8.2.5 Step Sequence;
-
-1. Determine if the current execution element should re-execute:
-
-. If the current execution element is a COMPLETED step that specifies allow-restart-if-complete=false, then transition based on the exit status for this step from the previous completed execution. If the transition is a next transition, then repeat step 3 here with the value of next as the new, "current" execution element. Or, if the transition
+. Determine if the current execution element should re-execute:
+.. If the current execution element is a COMPLETED step that specifies allow-restart-if-complete=false, then transition based on the exit status for this step from the previous completed execution. If the transition is a next transition, then repeat step 3 here with the value of next as the new, "current" execution element. Or, if the transition
 is a terminating transition such as end, stop, or fail, then terminate
 the restart execution accordingly.
-.  If the current execution element is a COMPLETED step that specifies
+..  If the current execution element is a COMPLETED step that specifies
 allow-restart-if-complete=true, then re-run the step and transition
 based on the new exit status from the new step execution. As above,
 either repeat step 3 with the next execution element or terminate the
 new execution as the transition element
-.   If the current execution element is a
+..   If the current execution element is a
 STOPPED or FAILED step then restart the step and transition based on the
 exit status from the new step execution.+
 +
@@ -271,8 +260,7 @@ loaded from the persistent store on a per-partition basis (this is not a
 new rule, but a fact implied by the discussion of checkpoints in section
 8.2.6 and the Step Context in section 9.4.1.1, which is summarized here
 for convenience).
-
-.  If the current execution element is a decision, execute the decision
+..  If the current execution element is a decision, execute the decision
 (i.e. execute the Decider) unconditionally. The Deciders "decide" method
 is passed a StepExecution array as a parameter. This array will be
 populated with the most-recently completed StepExecution(s) for each
@@ -280,7 +268,7 @@ corresponding step.E.g. some StepExecution(s) may derive from previous
 job executions and some from the current restart (execution). A single
 decision following a split could even have a mix of old, new
 StepExecution(s) in the same array.
-.  If the current execution element is a flow, transition to the first
+..  If the current execution element is a flow, transition to the first
 execution element in the flow and perform step 3 with this as the
 current element. When restart processing of the flow has completed, then
 follow the same rules which apply during the original execution (see
@@ -289,7 +277,7 @@ element, and repeat step 3 with that element as the current element. +
 +
 Note the same rules regarding transitioning within a flow during an
 original execution apply during restart processing as well.
-.  If the current execution element is a split, proceed in parallel for
+..  If the current execution element is a split, proceed in parallel for
 each flow in the split. For each flow, repeat step 3 with the flow
 element as the current element. When all flows in the split have been
 processed, follow the split's transition to the next execution element
