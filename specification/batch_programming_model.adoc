@@ -481,7 +481,7 @@ public abstract class AbstractBatchlet implements Batchlet {
 }
 ----
 
-image::images/image010.gif[image]
+image::images/image010.png[image]
 
 === Listeners
 Use Listeners to interpose on batch execution.
