@@ -33,7 +33,7 @@ include::batch_programming_model.adoc[]
 
 include::batch_runtime_spec.adoc[]
 
-include::batch_runtime_lifecycle.adoc[]
+include::job_runtime_lifecycle.adoc[]
 
 include::batch_xml_xsd.adoc[]
 
