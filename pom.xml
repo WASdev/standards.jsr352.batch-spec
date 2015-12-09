@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>javax.enterprise</groupId>
+    <artifactId>batch-spec</artifactId>
+    <packaging>pom</packaging>
+    <version>1.1-SNAPSHOT</version>
+
+    <description>Parent module for Batch Specification</description>
+
+    <url>https://github.com/WASdev/standards.jsr352.batch-spec</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <parent>
+        <groupId>net.java</groupId>
+        <artifactId>jvnet-parent</artifactId>
+        <version>1</version>
+    </parent>
+
+    <developers>
+        <developer>
+            <id>scottkurz</id>
+            <name>Scott Kurz</name>
+            <email>skurz@us.ibm.com</email>
+        </developer>
+    </developers>
+
+    <properties>
+
+        <!-- EDIT ME WHEN BUILDING A NEW VERSION -->
+        <batch.spec.version>1.1</batch.spec.version>
+
+    </properties>
+
+
+    <modules>
+        <module>specification</module>
+    </modules>
+
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+    </build>
+
+</project>
