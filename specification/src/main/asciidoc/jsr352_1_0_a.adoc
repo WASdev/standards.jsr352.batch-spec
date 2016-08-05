@@ -59,7 +59,7 @@ text of the spec delta or addition, but not in every single case.
 
 [width="100%",cols="<50%,<50%",]
 |=======================================================================
-|https://java.net/bugzilla/show_bug.cgiid=5389[5389] |In Sec. 10.7.1,
+|https://java.net/bugzilla/show_bug.cgiid=5389[5389] |In Sec. xref:_job_parameters_on_restart[10.7.1],
 should we have said we require a "no-arg" explicit or implicit
 constructor rather than a "default constructor"
 
@@ -97,7 +97,7 @@ transitioning & termination not fully defined
 |https://java.net/bugzilla/show_bug.cgiid=5374[5374] |Details of
 exception handling (by container)
 
-|https://java.net/bugzilla/show_bug.cgiid=4830[4830] |8.6.1 Transition
+|https://java.net/bugzilla/show_bug.cgiid=4830[4830] |xref:_next_element[8.6.1] Transition
 Next Element
 
 |https://java.net/bugzilla/show_bug.cgiid=4865[4865] |SPEC Partition
