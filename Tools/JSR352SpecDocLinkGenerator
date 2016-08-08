@@ -1,0 +1,115 @@
+#!/bin/bash
+
+#PURPOSE
+#The purpose of this script is to edit the the asciidoc source files for the JSR 352 specification document to include internal references to sections
+
+#METHOD
+#The section numbers are automatically generated at runtime
+#The in-text references are just written in, and plentiful.
+#This script will use an existing document to create a list of setion titles and their numbers
+#All instances of section number references in the text will be made into a xref to that section
+#The title of the section is the link, not the number.
+#Files are edited in place.
+
+#IMPORTANT ASSUMPTIONS
+#1. This script should exist in the "Tools" directory, which is even with the specification folder, README, and top pom.xml
+#2. For proper operation, the src docs(.adoc) should not contain any xref's when the script is run.
+    #It will fail to find those references already in this format. If section numbers changed, existing links will not be updated.
+#3. The generated PDF is not currently open. if it is, the automatic build at the end of the script will fail.
+
+
+#For testing, if you're worried about messing up clean files
+#Make a clean copy of the src directory, name it "srcClean"
+#    rm -rf ../specification/src #clean out previous run, if it exists. If not, files will be regenerated anyway
+#    cp -r ../specification/srcClean ../specification/src
+
+#The section numbers and titles need be taken from an existing copy of the doc. 
+#The HTML version is much easier to parse
+#check if the file we need exists, and build it if it doesn't
+if [ ! -f ../specification/target/generated-docs/jsr352_1_0_a.html ]
+then
+    echo "Generated file not found, making now"
+	cd ..
+    mvn clean package
+	cd Tools
+fi
+
+#grab the html elements that define section name, and the ID we need for the links
+#     .h. id=\"               Matches the <h# id=" portion of the html. The first "." gets the "<" 
+#              _.*\"          Titles start with an underscore, are variable length, and end with a quotation mark
+#                   .[0-9].   capture the ">", check that a section number exists
+
+grep ".h. id=\"_.*\".[0-9]." ../specification/target/generated-docs/jsr352_1_0_a.html > sections
+
+# This extracts the ID and the sections number, and will have a superfluous "> in between, from the html
+#    -Eo                            Use extended regex, only output the parts that match, not the whole line 
+#         -.*                        The section title
+#             [0-9]{1,2}\.          One or two digits followed by a period
+#            (            ){1,5}    That pattern one to five times (five is the max observed length of a section reference)
+
+grep -Eo "_.*([0-9]{1,2}\.){1,5}" sections > key
+
+# remove the extra "> and separate the fields
+sed "s/\">/\t/g" key > key2
+
+#arrange first field in file for easy read into array
+cut -f1 key2 > titlesfile
+
+# The previous greps occasionally pull in an extra "version.", because * is greedy. we can remove these because they come after spaces
+# All numbers come with an extra . at the end, which won't be in the doc, so we remove those too
+# the "." in the numbers will be parsed by regex as any char. need to escape those
+#                        \s.*$                              remove anything from a space to the end of the line`
+#                                      \.$                  remove . at end of line
+#                                                   \.      replace all . with \.
+
+cut -f2 key2 | sed -e "s/ .*$//" -e "s/\.$//" -e "s/\./\\\./g"  > sectionsfile
+
+#Put info into parallel arrays for indexing
+readarray -t sects < sectionsfile
+readarray -t titles < titlesfile
+
+#clean up files
+rm -f sections key key2 sectionsfile titlesfile
+
+#start a loop to cover all references
+cd ../specification/src/main/asciidoc
+i=0;
+for item in "${sects[@]}"; do
+
+    #It is known that these sections do not have references to them, likely because they are general and do not contain information.
+    #Being these simple numbers, they cause a lot of matches that just need to be filtered out. It's easier and faster to not even search for them.
+    #If the docs have been updated to include a reference to one of these sections, that section should be removed from this list.
+    #Section 13 does in fact have a single reference
+    if [[ "${sects[$i]}" =~ ^(1|2|3|4|5|6|7|8|9|10|11|12|14|15)$ ]]; then
+        let "i=i+1" 
+        continue
+    fi
+    
+    #The find command generates a list of files in the directory so we can change each one
+    
+    #Together, these 3 regexes cover all cases of how a section reference can appear
+    #I did a lot of struggling combining them into one, with incorrect results.
+    #If you can combine them into one that works, please do. As it is, using the ; to chain commands doesn't affect runtime
+    
+    #cases: Either a space, bar, or open paren in front of ref, or nothing in front; start of line
+    #After word: make sure it's not a ".[0-9]", because that means it's part of a longer ref
+    #sometimes there is not a second char after to check, but an EOL. These cases only occur with a ".", "," or ")" between.
+    #These combinations cover all possible cases (there is no case with start of line, ref, EOL)
+    find . -type f -name "*.adoc" | xargs sed -i -r "s/^${sects[$i]}(.[^0-9])/xref:${titles[$i]}[${sects[$i]}]\1/g;\
+    s/([ \|(])(${sects[$i]})(.[^0-9])/\1xref:${titles[$i]}[\2]\3/g;\
+    s/([ \|(])(${sects[$i]})([\.,)])$/\1xref:${titles[$i]}[\2]\3/g"
+    
+    
+    #format is "xref:<name of section to link to>[<text to display for link>]" where <> denotes values to enter, not actual brackets
+    
+    let "i=i+1" 
+done
+
+
+
+#generate the pdf
+cd ../../../..
+mvn clean package
+
+#return to starting directory
+cd Tools
