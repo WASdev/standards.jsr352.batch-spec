@@ -114,7 +114,7 @@ public abstract class AbstractItemReader implements ItemReader
 An ItemProcessor is used to process items for a chunk step.
 ItemProcessor is one of the three batch artifact types that comprise a
 chunk type step. An ItemProcessor is an optional artifact on a chunk
-type step. The other two are ItemProcessor and ItemWriter.
+type step. The other two are ItemReader and ItemWriter.
 
 The ItemProcessor interface may be used to implement an ItemProcessor
 batch artifact:

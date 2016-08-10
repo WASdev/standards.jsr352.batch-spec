@@ -318,7 +318,7 @@ status.
 The skippable-exception-classes element specifies a set of exceptions
 that chunk processing will skip. This element is a child element of the
 chunk element. It applies to exceptions thrown from the reader,
-processor, writer batch artifacts of a chunk type step. It also applies
+processor, and writer batch artifacts of a chunk type step. It also applies
 to exceptions thrown during checkpoint commit processing. A failed
 commit will be treated the same as a failed write. The total number of
 skips is set by the skip-limit attribute on the chunk element. See
