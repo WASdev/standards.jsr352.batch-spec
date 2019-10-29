@@ -60,6 +60,7 @@ pattern:
  JobOperator jobOper = BatchRuntime.getJobOperator();
 
 See section 10.9.5 for details on the BatchRuntime class.
+
 === Batch Artifact Loading
 
 All batch artifacts comprising a batch application are loadable by the
@@ -130,6 +131,7 @@ under the `META-INF` directory. For .jar files it is the standard `META-INF`
 directory. For .war files it is the `WEB-INF/classes/META-INF` directory.
 The format and content of the `batch.xml` file follows:
 
+[source,xml]
 ----
 <batch-artifacts xmlns="http://xmlns.jcp.org/xml/ns/javaee">
  <ref id="<reference-name>" class="<impl-class-name>" />
@@ -344,25 +346,19 @@ E.g., the following must hold:
 
 Earlier Execution:
 ----
-partitionPlanProps[] =
-mapper.getPartitionPlan().getPartitionProperties();
+partitionPlanProps[] = mapper.getPartitionPlan().getPartitionProperties();
 
-partitionPlanProps[0] ---maps to---> partition leaving off at
-checkpoints R0, W0
+partitionPlanProps[0] ---maps to---> partition leaving off at checkpoints R0, W0
 
-partitionPlanProps[1] ---maps to---> partition leaving off at
-checkpoints R1, W1
+partitionPlanProps[1] ---maps to---> partition leaving off at checkpoints R1, W1
 ----
 Current Execution:
 ----
-newPartitionPlanProps[] =
-mapper.getPartitionPlan().getPartitionProperties();
+newPartitionPlanProps[] = mapper.getPartitionPlan().getPartitionProperties();
 
-newPartitionPlanProps[0] ---maps to---> partition resuming at
-checkpoints R0, W0
+newPartitionPlanProps[0] ---maps to---> partition resuming at checkpoints R0, W0
 
-newPartitionPlanProps [1] ---maps to---> partition resuming at
-checkpoints R1, W1
+newPartitionPlanProps [1] ---maps to---> partition resuming at checkpoints R1, W1
 ----
 In the shorthand above, "maps to" simply means that the Properties
 object on the left is used to potentially resolve the 'partitionPlan'
@@ -380,7 +376,7 @@ resolve 'partitionPlan' substitutions.
 === Supporting Classes
 
 ==== JobContext
-[[app-listing]]
+[[app-listing.JobContext.java]]
 [source,java]
 .JobContext.java
 ----
@@ -470,7 +466,7 @@ public interface JobContext
 ----
 
 ==== StepContext
-[[app-listing]]
+[[app-listing.StepContext.java]]
 [source,java]
 .StepContext.java
 ----
@@ -591,7 +587,7 @@ public interface StepContext
 
 ==== Metric
 
-[[app-listing]]
+[[app-listing.Metric.Java]]
 [source,java]
 .Metric.java
 ----
@@ -627,7 +623,7 @@ public interface Metric
 
 
 ==== PartitionPlan
-[[app-listing]]
+[[app-listing.PartitionPlan.java]]
 [source,java]
 .PartitionPlan.java
 ----
@@ -746,7 +742,7 @@ public interface PartitionPlan
 
 
 
-[[app-listing]]
+[[app-listing.PartitionPlanImpl.java]]
 [source,java]
 .PartitionPlanImpl.java
 ----
@@ -809,7 +805,7 @@ public class PartitionPlanImpl implements PartitionPlan
 
 ==== BatchRuntime
 
-[[app-listing]]
+[[app-listing.BatchRuntime.java]]
 [source,java]
 .BatchRuntime.java
 ----
@@ -841,7 +837,7 @@ public class BatchRuntime
 
 
 ==== BatchStatus
-[[app-listing]]
+[[app-listing.BatchStatus.java]]
 [source,java]
 .BatchStatus.java
 ----
@@ -860,7 +856,7 @@ public enum BatchStatus
 ----
 
 ==== JobOperator
-[[app-listing]]
+[[app-listing.JobOperator.java]]
 [source,java]
 .JobOperator.java
 ----
@@ -1086,7 +1082,7 @@ public interface JobOperator
 ----
 
 ==== JobInstance
-[[app-listing]]
+[[app-listing.JobInstance.java]]
 [source,java]
 .JobInstance.java
 ----
@@ -1108,7 +1104,7 @@ public interface JobInstance
 
 ==== JobExecution
 
-[[app-listing]]
+[[app-listing.JobExecution.java]]
 [source,java]
 .JobExecution.java
 ----
@@ -1153,7 +1149,7 @@ public interface JobExecution
     */
     public Date getCreateTime();
     /**
-    * Get time execution was last updated updated.
+    * Get time execution was last updated.
     * *@return* date (time)
     */
     public Date getLastUpdatedTime();
@@ -1167,7 +1163,7 @@ public interface JobExecution
 
 ==== StepExecution
 
-[[app-listing]]
+[[app-listing.StepExecution.java]]
 [source,java]
 .StepExecution.java
 ----

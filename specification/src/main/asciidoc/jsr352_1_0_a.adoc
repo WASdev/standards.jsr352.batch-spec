@@ -1,5 +1,6 @@
 = Batch Applications for the Java Platform
 :sectnums:
+:sectnumlevels: 5
 :toclevels: 9
 :toc: macro
 :tocplacement: manual

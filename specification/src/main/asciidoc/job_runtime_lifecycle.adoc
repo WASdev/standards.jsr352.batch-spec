@@ -72,11 +72,11 @@ processing and exist until deleted by an implementation provided means.
 .. < - >[Batchlet.stop] // thread Py, StepContext is available
 .. < - >[PartitionCollector.collectPartitionData] // thread Px
 . // when collector payload arrives:
-.. < - >[PartitionAnalyzer.analyzeCollectorData] // thread A
+. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[PartitionAnalyzer.analyzeCollectorData] // thread A
 . // when partition ends:
-..  < - >[PartitionAnalyzer.analyzeStatus] // thread A
+. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[PartitionAnalyzer.analyzeStatus] // thread A
 .  // if rollback condition occurs:
-.  < - >[PartitionReducer.rollbackPartitionedStep] // thread A
+. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[PartitionReducer.rollbackPartitionedStep] // thread A
 .  < - >[PartitionReducer.beforePartitionedStepCompletion] // thread A
 .  < - >[PartitionReducer.afterPartitionedStepCompletion] // thread A
 .  < - >[StepListener.afterStep...] // thread A
@@ -97,7 +97,7 @@ processing and exist until deleted by an implementation provided means.
 . <repeat until no more items (i.e. while readItem hasn't returned 'null') > \{
 .. <begin checkpoint interval [<begin chunk transaction>]>
 .. <repeat until checkpoint criteria reached OR readItem returns `null`> \{
-...< - >ItemReader.readItem // thread A
+... < - >ItemReader.readItem // thread A
 ... // if readItem returns non-null
 .... < - >ItemProcessor.processItem // thread A
 .... // if processItem returns non-null, <add item to writeItems
@@ -125,7 +125,7 @@ buffer>
 . <Store step level properties in StepContext>
 . < - >[StepListener.beforeStep...] // thread A
 . < - >[PartitionReducer.beginPartitionedStep] // thread A
-. < - >[PartitionMapper.mapPartitions] // thread A+
+. < - >[PartitionMapper.mapPartitions] // thread A +
  // per partition - on thread Px:
 .. [<begin transaction> ]
 .. < - >ItemReader.open // thread Px
@@ -141,9 +141,9 @@ buffer>
 ..... //if processItem returns non-null, <add item to writeItems buffer>
 ... }
 ... //if at least one non-null value has been successfully read in this partition of the present chunk
-....  < - >ItemWriter.writeItems // thread Px
-...< - >[ItemReader.checkpointInfo] // thread Px
-...< - >[ItemWriter.checkpointInfo] // thread Px
+.... < - >ItemWriter.writeItems // thread Px
+... < - >[ItemReader.checkpointInfo] // thread Px
+... < - >[ItemWriter.checkpointInfo] // thread Px
 ... <Store (partition-local) StepContext persistent area>
 ... [<commit chunk transaction>]
 ... < - >[PartitionCollector.collectPartitionData] // thread Px
@@ -155,13 +155,13 @@ buffer>
 . [<begin transaction> ] // thread A
 . // Actions 9-12 run continuously until all partitions end.
 . // when collector payload arrives:
-.. < - >[PartitionAnalyzer.analyzeCollectorData] // thread A
+. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[PartitionAnalyzer.analyzeCollectorData] // thread A
 .  // when partition ends:
-..  < - >[PartitionAnalyzer.analyzeStatus] // thread A
+. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[PartitionAnalyzer.analyzeStatus] // thread A
 .  // Remaining actions run after all partitions end:
 .  // if rollback condition occurs:
-..  < - >[PartitionReducer.rollbackPartitionedStep] // thread A
-..  [<rollback transaction >]
+. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[PartitionReducer.rollbackPartitionedStep] // thread A
+. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}[<rollback transaction >]
 .  // else not rollback
 .  < - >[PartitionReducer.beforePartitionedStepCompletion] // thread A
 .  [<commit transaction> ] // thread A
@@ -190,7 +190,7 @@ buffer>
 ... < - >ItemReader.readItem // thread A
 ... < - >[ItemReadListener.afterRead] // thread A
 ... // or:
-... \{
+... {
 ... < - >[ItemReadListener.onReadError] // thread A
 ... < - >[SkipListener.onSkipReadItem] // thread A
 ... }
@@ -200,20 +200,20 @@ buffer>
 .... < - >[ItemProcessListener.afterProcess] // thread A
 .... //if processItem returns non-null,< add item to writeItems buffer>
 .... // or:
-.... \{
+.... {
 .... < - >[ItemProcessListener.onProcessError] // thread A
 .... < - >[SkipListener.onSkipProcessItem] // thread A
 .... }
-... }
-... //if at least one non-null value has been successfully read in
+.. }
+.. //if at least one non-null value has been successfully read in
 the present chunk
-.... < - >[ItemWriteListener.beforeWrite] // thread A
-.... < - >ItemWriter.writeItems // thread A
-.... < - >[ItemWriteListener.afterWrite] // thread A
-.... // or:
-.... {
-.... < - >[ItemWriteListener.onWriteError] // thread A
-.... < - >[SkipListener.onSkipWriteItems] // thread A
+... < - >[ItemWriteListener.beforeWrite] // thread A
+... < - >ItemWriter.writeItems // thread A
+... < - >[ItemWriteListener.afterWrite] // thread A
+... // or:
+... {
+... < - >[ItemWriteListener.onWriteError] // thread A
+... < - >[SkipListener.onSkipWriteItems] // thread A
 ... }
 ..  < - >[ChunkListener.afterChunk] // thread A
 .. < - >[ItemReader.checkpointInfo] // thread A
@@ -251,59 +251,56 @@ Note rollback processing is also depicted in this section.
 ... S2:
 ... < - >ItemReader.readItem // thread A
 ... // if exception
-... < - >[ItemReadListener.onReadErrror] // thread A
-... < - >[RetryReadListener.onRetryReadException] // thread A
-... // if retryable exception
-... // if no-rollback exception
-... resume S2:
-... // else
-... <end repeat>
-... // else
-... <end repeat>
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[ItemReadListener.onReadErrror] // thread A
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[RetryReadListener.onRetryReadException] // thread A
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if retryable exception
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if no-rollback exception
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}resume S2:
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// else
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}<end repeat>
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// else
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}<end repeat>
 ... S3:
-... // if readItem
-... returns non-null
-... < - >ItemProcessor.processItem // thread A
-... // if exception
-... < - >[ItemProcessListener.onProcessErrror] // thread A
-... < - >[RetryProcessListener.onRetryProcessException] // thread A
-... // if retryable exception
-... // if no-rollback exception
-... resume S3:
-... // else
-... <end repeat>
-... // else
-... <end repeat>
+... // if readItem returns non-null
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >ItemProcessor.processItem // thread A
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if exception
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[ItemProcessListener.onProcessErrror] // thread A
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[RetryProcessListener.onRetryProcessException] // thread A
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if retryable exception
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if no-rollback exception
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}resume S3:
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// else
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}<end repeat>
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// else
+... {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}<end repeat>
 ... // if processItem returns non-null, <add item to writeItems buffer>
 .. }
 .. // if rollback exception, execute rollback procedure (below) and
 resume at S1 with item-count=1
 ..  S4:
-.. // if at least one non-null value has been successfully read in
-the present chunk
-..   < - >ItemWriter.writeItems (buffer) //
-thread A
-..  // if exception
-..  < - >[ItemWriteListener.onWriteErrror] // thread A
-.. < - >[RetryWriteListener.onRetryWriteException] // thread A
-..  // if retryable exception
-..   // if no-rollback exception
-.. resume S4:
-.. // else
-.. execute rollback procedure (below) and resume S1:
-.. // else execute rollback procedure (below) and resume S1:
-..  < - >[ItemReader.checkpointInfo] // thread A
+.. // if at least one non-null value has been successfully read in the present chunk
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >ItemWriter.writeItems (buffer) // thread A
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if exception
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[ItemWriteListener.onWriteErrror] // thread A
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}< - >[RetryWriteListener.onRetryWriteException] // thread A
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if retryable exception
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if no-rollback exception
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}resume S4:
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// else
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}execute rollback procedure (below) and resume S1:
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// else execute rollback procedure (below) and resume S1:
+.. < - >[ItemReader.checkpointInfo] // thread A
 .. < - >[ItemWriter.checkpointInfo] // thread A
 ..  <Store StepContext persistent area> // thread A
 .. S5:
 .. [<commit chunk transaction>] // thread A
-..    // if exception
-.. // if retryable exception
-.. // if no-rollback exception:
-..  resume S5:
-..  // else
-..  execute rollback procedure (below) and resume S1:
-..   // else execute rollback procedure (below) and resume S1:
+.. // if exception
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if retryable exception
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// if no-rollback exception:
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}resume S5:
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// else
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}{nbsp}execute rollback procedure (below) and resume S1:
+.. {nbsp}{nbsp}{nbsp}{nbsp}{nbsp}// else execute rollback procedure (below) and resume S1:
 .  }
 .  [<begin transaction> ]
 .  < - >ItemWriter.close // thread A
@@ -346,18 +343,16 @@ info
 .. < - >[CheckpointAlgorithm.beginCheckpoint] // thread A
 .. <begin checkpoint interval [<begin chunk transaction>]>
 .. ]
-..  <repeat until isReadyToCheckpoint returns 'true' OR readItem
-returns 'null'> \{
-.. < - >ItemReader.readItem // thread A
-.. // if readItem returns non-null
-. < - >ItemProcessor.processItem // thread A
-. //if processItem returns non-null, <add item to writeItems
-buffer>
-.. < - >CheckpointAlgorithm.isReadyToCheckpoint // thread A
+..  <repeat until isReadyToCheckpoint returns 'true' OR readItem returns 'null'> \{
+... < - >ItemReader.readItem // thread A
+... // if readItem returns non-null
+.... < - >ItemProcessor.processItem // thread A
+.... //if processItem returns non-null, <add item to writeItems buffer>
+... < - >CheckpointAlgorithm.isReadyToCheckpoint // thread A
 ..  }
 .. //if at least one non-null value has been successfully read in
 the present chunk
-.. < - >ItemWriter.writeItems // thread A
+... < - >ItemWriter.writeItems // thread A
 ..  < - >[ItemReader.checkpointInfo] // thread A
 ..  < - >[ItemWriter.checkpointInfo] // thread A
 .. <Store StepContext persistent area>

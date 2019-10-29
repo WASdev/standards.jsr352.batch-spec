@@ -27,7 +27,7 @@ exist)
 3.  cycles among next values (e.g. step1:next=step2; step2:next=step1)
 
 === JSL XSD
-[[app-listing]]
+[[app-listing.jsl_xsd]]
 [source,xml]
 ----
 <xml version="1.0" encoding="UTF-8">

@@ -8,7 +8,10 @@ The 'job' element identifies a job.
 
 Syntax:
 
+[source,xml]
+----
  <job id="{name}" restartable="{true|false}">
+----
 
 Where:
 
@@ -34,10 +37,13 @@ Multiple listeners may be configured on a job. However, there is no guarantee of
 
 Syntax:
 
+[source,xml]
+----
  <listeners>
   <listener ref="{name}">
   ...
  </listeners>
+----
 
 Where:
 [width="100%",cols="<50%,<50%",]
@@ -63,9 +69,12 @@ Context.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
    <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -87,10 +96,13 @@ information on batchlet type steps.
 
 Syntax:
 
+[source,xml]
+----
  <step id="{name}"
        start-limit="{integer}"
        allow-start-if-complete ="{true|false}"
        next="{flow-id|step-id|split-id|decision-id}">
+----
 
 Where:
 
@@ -133,11 +145,14 @@ when restarted.
 
 Syntax:
 
+[source,xml]
+----
  <chunk checkpoint-policy="\{item|custom}"
   item-count="{value}"
   time-limit="{value}"
   skip-limit="{value}"
   retry-limit="{value}" />
+----
 
 Where:
 
@@ -184,7 +199,10 @@ only one item reader.
 
 Syntax:
 
+[source,xml]
+----
  <reader ref="{name}"/>
+----
 
 Where:
 
@@ -201,9 +219,12 @@ number of properties may be specified.
 
 Syntax:
 
+[source,xml]
+----
   <properties>
     <property name="{property-name}" value="{name-value}"/>
   </properties>
+----
 
 Where:
 
@@ -227,7 +248,10 @@ specified.
 
 Syntax:
 
+[source,xml]
+----
  <processor ref="{name}"/>
+----
 
 Where:
 
@@ -244,9 +268,12 @@ processor. Any number of properties may be specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -269,7 +296,10 @@ and only one item writer.
 
 Syntax:
 
+[source,xml]
+----
  <writer ref="{name}"/>
+----
 
 Where:
 
@@ -286,9 +316,12 @@ number of properties may be specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -353,10 +386,13 @@ Skip Listener batch interfaces.
 
 Syntax:
 
+[source,xml]
+----
  <skippable-exception-classes>
   <include class="{class name}"/>
   <exclude class="{class name}"/>
  </skippable-exception-classes>
+----
 
 Where:
 
@@ -378,10 +414,13 @@ specified, the class attribute is required.
 
 Example:
 
+[source,xml]
+----
  <skippable-exception-classes>
   <include class="java.lang.Exception"/>
   <exclude class="java.io.FileNotFoundException"/>
  </skippable-exception-classes>
+----
 
 The preceding example would skip all exceptions except
 `java.io.FileNotFoundException`, (along with any subclasses of
@@ -413,10 +452,13 @@ Retry Listener batch artifact.
 
 Syntax:
 
+[source,xml]
+----
  <retryable-exception-classes>
   <include class="{class name}"/>
   <exclude class="{class name}"/>
  </retryable-exception-classes>
+----
 
 Where:
 
@@ -438,10 +480,13 @@ However, when specified, the class attribute is required.
 
 Example:
 
+[source,xml]
+----
  <retryable-exception-classes>
   <include class="java.io.IOException"/>
   <exclude class="java.io.FileNotFoundException"/>
  </retryable-exception-classes>
+----
 
 The result is that all IOExceptions except `FileNotFoundException` (and
 its subclasses) would be retried.
@@ -486,11 +531,13 @@ discussion in section 8.2.1.4.1 for skipping exceptions.
 
 Syntax:
 
+[source,xml]
+----
  <no-rollback-exception-classes>
   <include class="{class name}"/>
   <exclude class="{class name}"/>
  </no-rollback-exception-classes>
-
+----
 Where:
 
 [width="100%",cols="<50%,<50%",]
@@ -520,7 +567,10 @@ checkpoint algorithms.
 
 Syntax:
 
+[source,xml]
+----
  <checkpoint-algorithm ref="{name}"/>
+----
 
 Where:
 
@@ -537,9 +587,12 @@ checkpoint algorithm. Any number of properties may be specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -565,7 +618,10 @@ file transfer.
 
 Syntax:
 
+[source,xml]
+----
  <batchlet ref="{name}"/>
+----
 
 Where:
 
@@ -586,9 +642,12 @@ number of properties may be specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -614,9 +673,12 @@ StepContext.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -645,10 +707,13 @@ guarantee of the order in which they are invoked.
 
 Syntax:
 
+[source,xml]
+----
  <listeners>
   <listener ref="{name}">
   ...
  </listeners>
+----
 
 Where:
 
@@ -665,9 +730,12 @@ step listener. Any number of properties may be specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -684,11 +752,14 @@ be a valid XML string value. This is a required attribute.
 
 Example:
 
+[source,xml]
+----
  <listener ref="{name}">
   <properties>
    <property name="Property1" value="Property1-Value"/>
   </properties>
  </listener>
+----
 
 ==== Step Sequence
 
@@ -706,7 +777,10 @@ allows for looping among job execution elements.
 
 Syntax:
 
+[source,xml]
+----
  <next on="{exit status}" to="{id}" />
+----
 
 Where:
 
@@ -756,17 +830,25 @@ this need.
 The 'partition' element specifies that a step is a partitioned step. The
 partition element is a child element of the 'step' element. It is an
 optional element.
+
 Syntax:
 
+[source,xml]
+----
  <partition>
+----
 
 Example:
 
 The following Job XML snippet shows how to specify a partitioned step:
+
+[source,xml]
+----
  <step id="Step1">
   <chunk .../> or <batchlet ... />
   <partition .../>
  </step>
+----
 
 ===== Partition Plan
 
@@ -786,7 +868,10 @@ dynamically-defined plan.
 
 Syntax:
 
+[source,xml]
+----
  <plan partitions="{number}" threads="{number}"/>
+----
 
 Where:
 
@@ -807,12 +892,15 @@ Example:
 The following Job XML snippet shows how to specify a step partitioned
 into 3 partitions on 2 threads:
 
+[source,xml]
+----
  <step id="Step1">
    <chunk .../>
    <partition>
      <plan partitions="3" threads="2"/>
    </partition>
  </step>
+----
 
 ===== Partition Properties
 
@@ -823,9 +911,12 @@ partition mapper.
 
 Syntax:
 
+[source,xml]
+----
  <properties partition="_partition-number_">
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -850,6 +941,8 @@ Example:
 The following Job XML snippet shows a step of 2 partitions with a unique
 value for the property named "filename" for each partition:
 
+[source,xml]
+----
  <partition>
   <plan partitions="2">
    <properties partition="0">
@@ -860,6 +953,7 @@ value for the property named "filename" for each partition:
    </properties>
   </plan>
  </partition>
+----
 
 ===== Partition Mapper
 
@@ -872,7 +966,10 @@ mutually exclusive with the plan element.
 
 Syntax:
 
+[source,xml]
+----
  <mapper ref="{name}">
+----
 
 Where:
 
@@ -882,9 +979,12 @@ Where:
 |============================================
 Example:
 
+[source,xml]
+----
  <partition>
   <mapper ref="MyStepPartitioner"/>
  </partition>
+----
 
 ====== Mapper Properties
 The 'properties' element may be specified as a child element of the
@@ -893,9 +993,12 @@ batch artifact. Any number of properties may be specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -923,8 +1026,10 @@ The 'reducer' element is a child element of the 'partition' element.
 
 Syntax:
 
+[source,xml]
+----
  <reducer ref="{name}">
-
+----
 Where:
 
 [width="100%",cols="<50%,<50%",]
@@ -933,9 +1038,12 @@ Where:
 |============================================
 Example:
 
+[source,xml]
+----
  <partition>
  <reducer ref="MyStepPartitionReducer"/>
  </partition>
+----
 
 ====== Partition Reducer Properties
 The 'properties' element may be specified as a child element of the
@@ -945,9 +1053,12 @@ specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -980,7 +1091,10 @@ The 'collector' element is a child element of the 'partition' element.
 
 Syntax:
 
+[source,xml]
+----
  <collector ref="{name}">
+----
 
 Where:
 
@@ -991,9 +1105,12 @@ Where:
 
 Example:
 
+[source,xml]
+----
  <partition>
- <collector ref="MyStepCollector"/>
+  <collector ref="MyStepCollector"/>
  </partition>
+----
 
 ====== Partition Collector Properties
 The 'properties' element may be specified as a child element of the
@@ -1003,9 +1120,12 @@ specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -1034,7 +1154,10 @@ further information.
 
 Syntax:
 
+[source,xml]
+----
  <analyzer ref="{name}">
+----
 
 Where:
 
@@ -1045,9 +1168,12 @@ Where:
 
 Example:
 
+[source,xml]
+----
  <partition>
- <analyzer ref="MyStepAnalyzer"/>
+  <analyzer ref="MyStepAnalyzer"/>
  </partition>
+----
 
 ====== Partition Analyzer Properties
 The 'properties' element may be specified as a child element of the
@@ -1057,9 +1183,12 @@ specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -1101,9 +1230,12 @@ on transition elements.
 
 Syntax:
 
+[source,xml]
+----
  <flow id="{name}"next="{flow-id|step-id|split-id|decision-id}">
   <step> ... </step> ...
  </flow>
+----
 
 Where:
 
@@ -1131,10 +1263,13 @@ to a step, flow, decision, or another split.
 
 Syntax:
 
+[source,xml]
+----
  <split id="{name}"next="{flow-id|step-id|split-id|decision-id}">
   <flow> ... </flow>
   ...
  </split>
+----
 
 Where:
 
@@ -1151,8 +1286,7 @@ element in the job. Note: next attributes cannot be specified such that
 a loop occurs among steps.
 |=======================================================================
 
-==== Split Termination Processing
-Incomplete
+==== Split Termination Processing Incomplete
 
 The effort of the initial 1.0 final release specification to define
 split termination processing is recognized as incomplete. This is
@@ -1202,7 +1336,10 @@ elements to decide the next transition.
 
 Syntax:
 
+[source,xml]
+----
  <decision id="{name}" ref="{ref_-_name}">
+----
 
 Where:
 
@@ -1216,9 +1353,12 @@ required attribute.
 |=======================================================================
 Example:
 
+[source,xml]
+----
  <decision id="AfterFlow1" ref="MyDecider">
  ...
  </decision>
+----
 
 ==== Decision Properties
 
@@ -1228,9 +1368,12 @@ number of properties may be specified.
 
 Syntax:
 
+[source,xml]
+----
  <properties>
   <property name="{property-name}" value="{name-value}"/>
  </properties>
+----
 
 Where:
 
@@ -1272,7 +1415,10 @@ Multiple next elements may be specified in the current containment
 scope.
 Syntax:
 
+[source,xml]
+----
  <next on="{exit status}" to="{step id_|_flow id_|_split id}"/>
+----
 
 Where:
 
@@ -1291,9 +1437,12 @@ execution element such that a loop occurs in the batch job.
 |=======================================================================
 Example:
 
+[source,xml]
+----
 <step id="Step1">
  <next on="*" to="Step2"/>
- </step>
+</step>
+----
 
 ==== Fail Element
 
@@ -1307,7 +1456,10 @@ the step, flow, and decision elements.
 
 Syntax:
 
+[source,xml]
+----
  <fail on="{exit status}" exit-status="{exit status}"/>
+----
 
 Where:
 
@@ -1328,10 +1480,12 @@ fail element).
 |=======================================================================
 
 Example:
-
+[source,xml]
+----
 <step id="Step1">
  <fail on="FAILED" exit-status="EARLY COMPLETION"/>
- </step>
+</step>
+----
 
 ==== End Element
 
@@ -1344,7 +1498,10 @@ as a child of the step, flow, and decision elements.
 
 Syntax:
 
+[source,xml]
+----
  <end on="{exit status}" exit-status="{exit status}"/>
+----
 
 Where:
 
@@ -1366,9 +1523,12 @@ element).
 
 Example:
 
+[source,xml]
+----
  <step id="Step1">
   <end on="COMPLETED" exit-status="EARLY COMPLETION">
  </step>
+----
 
 ==== Stop Element
 
@@ -1381,8 +1541,10 @@ Multiple stop elements may be specified in the current containment
 scope. The stop element is supported as a child of step, flow, and
 decision elements.
 
-<stop on="{exit status}" exit-status="{exit status}"
-restart="{step id_|_flow id_|_split id}"/>
+[source,xml]
+----
+<stop on="{exit status}" exit-status="{exit status}" restart="{step id_|_flow id_|_split id}"/>
+----
 
 Where:
 
@@ -1408,9 +1570,12 @@ This is an optional attribute.
 
 Example:
 
-<step id="Step1">
- <stop on="COMPLETED" restart="step2"/>
+[source,xml]
+----
+ <step id="Step1">
+  <stop on="COMPLETED" restart="step2"/>
  </step>
+----
 
 === Batch and Exit Status
 
@@ -1458,33 +1623,33 @@ exists only as a matter of history.
 
 A job execution will end under the following conditions:
 
-1.  A job-level execution element (step, flow, or split) finishes
+. A job-level execution element (step, flow, or split) finishes
 execution, without specifying a "next" attribute and without the exit
 status matching any transition elements. (See section xref:_transitioning_precedence_rules[8.9.2] for
 details).  In this case, the batch status is set
 to COMPLETED.
-2.  A step throws an exception to the batch runtime that does not match
+. A step throws an exception to the batch runtime that does not match
 skip or retry criteria, with the exit status not matching any transition
 elements. In this case, the batch status is set to FAILED. (See section
 xref:_transitioning_precedence_rules[8.9.2] for details).  In the case of partitioned
 or concurrent (split) step execution, all other still-running parallel
 instances are allowed to complete before the job ends with FAILED batch
 status.
-3.  A step, flow, or decision terminates execution with a stop, end, or
+. A step, flow, or decision terminates execution with a stop, end, or
 fail element. In this case, the batch status is STOPPED, COMPLETED, or
 FAILED, respectively .
 
 The batch and exit status of the job is set as follows:
 
-1.  Batch status is initially set to STARTING by the batch runtime.
+. Batch status is initially set to STARTING by the batch runtime.
 Immediately before starting the first step, the batch runtime sets the
 batch status to STARTED .
-2.  Exit status can be overridden by any artifact by invoking the exit
+. Exit status can be overridden by any artifact by invoking the exit
 status setter method on the JobContext object.
-3.  Exit status can be overridden by a decision element.
-4.  Exit status can be overridden by a terminating transition element on
+. Exit status can be overridden by a decision element.
+. Exit status can be overridden by a terminating transition element on
 a step, flow, or split. See section xref:_transition_elements[8.6].
-5.  Final batch status is set by the batch runtime depending on the
+. Final batch status is set by the batch runtime depending on the
 outcome of the job. See table above. Exit status is set to the final
 batch status if it was not overridden by any of the override means
 described earlier in this list. Note the last override to set exit
@@ -1510,9 +1675,9 @@ recognizing here that this is a valid state transition.
 ==== Batch and Exit Status for Steps
 
 Step batch status is set initially, and then again at the conclusion of
-the step, by the batch runtime. [line-through]*Step exit status is
+the step, by the batch runtime. [line-through]#Step exit status is
 initially set to the same value as batch
-status.*  Step exit status may be set by any
+status.#  Step exit status may be set by any
 batch artifact configured to the step by invoking the exit status setter
 method in the StepContext object. See section xref:_batch_contexts[9.4] for further
 information about the StepContext object. Setting the step exit status
@@ -1527,6 +1692,7 @@ more child transition elements), but only potentially affect the batch
 and exit status of the job.
 
 Example:
+[source,xml]
 ----
 <step id="FS1">
  <batchlet >
@@ -1584,18 +1750,15 @@ Job XML supports substitution as part of any attribute value. The
 following expression language is supported on all attributes:
 
 ----
-<attribute-value> ::= ' " ' <principle-value-expression>
-[<default-expression>] ' " '
+<attribute-value> ::= ' " ' <principle-value-expression>[<default-expression>] ' " '
 
 <principle-value-expression> ::= <value-expression>
 
-<value-expression> ::= "#\{"<operator-expression>"}" | <string-literal>
-[ <value-expression> ]
+<value-expression> ::= "#\{"<operator-expression>"}" | <string-literal>[ <value-expression> ]
 
 <default-expression> ::= ":" <value-expression> ";"
 
-<operator-expression> ::= <operator1> | <operator2> | <operator3> |
-<operator4> | <operator5>
+<operator-expression> ::= <operator1> | <operator2> | <operator3> |<operator4> | <operator5>
 
 <operator1> ::= "jobParameters" "[" <target-name> "]"
 
@@ -1626,13 +1789,13 @@ substitution expression operator. This name is referred to generally in
 substitution expression syntax as a "target name". There are four
 substitution operators:
 
-1.  jobParameters - specifies to use a named parameter from the job
+. jobParameters - specifies to use a named parameter from the job
 parameters.
-2.  jobProperties - specifies to use a named property from among the
+. jobProperties - specifies to use a named property from among the
 job's properties.
-3.  systemProperties - specifies to use a named property from the system
+. systemProperties - specifies to use a named property from the system
 properties.
-4.  partitionPlan - specifies to use a named property from the partition
+. partitionPlan - specifies to use a named property from the partition
 plan of a partitioned step.
 
 ===== jobParameters Substitution Operator
@@ -1654,36 +1817,24 @@ the reader properties collection, then the step properties collection
 any). The search stops at the first occurrence of the specified target
 name.
 
+[source,xml]
 ----
  <job id="job1">
- <properties>
- <property name="filestem" value="postings"/>
-
-<property name="outputlog" value="jobmessages"/>
-
-</properties>
- <step id="step1">
-
-<properties/>
- <chunk>
-
-<reader ref="MyReader">
-
-<properties>
- <property name="infile.name"
-value="#\{jobProperties['filestem']}.txt"/>
-
-<property name="outputlog" value="readermessages"/>
-
-<property name="outfile.name"
-value="#\{jobProperties['outputlog']}.txt"/>
+  <properties>
+   <property name="filestem" value="postings"/>
+   <property name="outputlog" value="jobmessages"/>
  </properties>
-
-</reader>
- </chunk>
-
-</step>
-
+ <step id="step1">
+  <chunk>
+    <reader ref="MyReader">
+     <properties>
+      <property name="infile.name" value="#\{jobProperties['filestem']}.txt"/>
+      <property name="outputlog" value="readermessages"/>
+      <property name="outfile.name" value="#\{jobProperties['outputlog']}.txt"/>
+     </properties>
+    </reader>
+  </chunk>
+ </step>
 </job>
 ----
 
@@ -1709,27 +1860,24 @@ before the partition execution begins.
 
 E.g. Given job, job1:
 
+[source,xml]
 ----
 <job id="job1">
  <step id="step1">
- <chunk>
- <reader  ref="MyReader>
- <properties>
- <property name="infile.name"
- value="file#\{partitionPlan['myPartitionNumber']}.txt"/>
-
-<property name="outfile.name"
- value="#\{partitionPlan['outFile']}"/>
- </properties>
- </reader>
- <writer ref="MyWriter"/>
- </chunk>
-
-<partition>
- <mapper ref="MyMapper "/>
- </partition>
+  <chunk>
+   <reader  ref="MyReader>
+    <properties>
+     <property name="infile.name" value="file#\{partitionPlan['myPartitionNumber']}.txt"/>
+     <property name="outfile.name" value="#\{partitionPlan['outFile']}"/>
+    </properties>
+   </reader>
+   <writer ref="MyWriter"/>
+  </chunk>
+  <partition>
+   <mapper ref="MyMapper "/>
+  </partition>
  </step>
- </job>
+</job>
 ----
 
 And MyMapper implementation:
@@ -1786,9 +1934,11 @@ that occurs before it is referenced. In the following example, property
 "infile.name" is defined before it is used to form the value of property
 "tmpfile.name". This is a resolvable reference.E.g.
 
+[source,xml]
+----
  <property name="infile.name" value="in.txt" />
- <property name="tmpfile.name"
-value="#\{jobProperties['infile.name']}.tmp" />
+ <property name="tmpfile.name" value="#\{jobProperties['infile.name']}.tmp" />
+----
 
 The batch runtime resolves a resolvable reference with the resolved
 value of the specified property reference.
@@ -1801,9 +1951,11 @@ following example, property "infile.name" is defined after it is used to
 form the value of property "tmpfile.name". This is a unresolvable
 reference.E.g.
 
- <property name="tmpfile.name"
-value="in.txt#\{jobProperties[infile.name]}" />
+[source,xml]
+----
+ <property name="tmpfile.name" value="in.txt#\{jobProperties[infile.name]}" />
  <property name="infile.name" value="in.txt" />
+----
 
 The batch runtime resolves an unresolvable reference in XML to the
 empty string "".
@@ -1832,45 +1984,45 @@ option in the PartitionPlan object. See section 10.9.4 for details on
 the PartitionPlan class.
 
 ==== Examples
-
+[source,xml]
 ----
        <property name="infile.name" value="in.txt" />
 ----
 
 Resolved property: infile.name="in.txt"
 
+[source,xml]
 ----
-       <property name="infile.name"
-value="#\{jobParameters['infile.name']}" />
+       <property name="infile.name" value="#\{jobParameters['infile.name']}" />
 ----
 
 Resolved property: infile.name= value of infile.name job parameter
 
+[source,xml]
 ----
-       <property name="infile.name"
-value="#\{systemProperties['infile.name']}" />
+       <property name="infile.name" value="#\{systemProperties['infile.name']}" />
 ----
 
 Resolved property: infile.name= value of infile.name system property
 
+[source,xml]
 ----
-       <property name="infile.name"
-value="#\{jobProperties['infile.name']}" />
+       <property name="infile.name" value="#\{jobProperties['infile.name']}" />
 ----
 
 Resolved property: infile.name= value of infile.name job property
 
+[source,xml]
 ----
-       <property name="infile.name"
-value="#\{partitionPlan['infile.name']}" />
+       <property name="infile.name" value="#\{partitionPlan['infile.name']}" />
 ----
 
 Resolved property: infile.name= value of infile.name from partition
 plan for the current partition
 
+[source,xml]
 ----
-       <property name="infile.name"
-value="#\{jobParameters['infile.name']}:in.txt;" />
+       <property name="infile.name" value="#\{jobParameters['infile.name']}:in.txt;" />
 ----
 
 Resolved property: infile.name = value of infile.name job parameter or
@@ -1893,17 +2045,13 @@ perfomed, and the rest of the transition elements are ignored. If not,
 the second transition element is evaluated, etc.
 
 Example:
+[source,xml]
 ----
 <step id="Step1">
  <next on="RC0" to="Step2"/>
-
-<next on="RC4" to="Step3"/>
-
-<end on="RC4" exit-status="DONE"/>
-
-<fail on="*"/> <!-- Matches anything, so only makes sense as last
-transition element-->
-
+ <next on="RC4" to="Step3"/>
+ <end on="RC4" exit-status="DONE"/>
+ <fail on="*"/> <!-- Matches anything, so only makes sense as last transition element-->
 </step>
 ----
 ==== Transitioning Precedence Rules
@@ -1932,25 +2080,22 @@ The following examples illustrate how the above rules might be employed:
 Example 1: Transition to Step2, unless exit status of RC_ABORT seen, in
 which case fail the job
 
+[source,xml]
 ----
 <step id="Step1" next="Step2">
  <fail on="RC_ABORT" exit-status="ABORTED"/>
-
 </step>
 ----
 
 Example 2: Transition to Step2, but if exception thrown, transition to
 RecoveryStep.
 
+[source,xml]
 ----
 <step id="Step1" next="Step2">
-
-<!-- Assumes step exit status defaults to step batch status (FAILED)
--->
+<!-- Assumes step exit status defaults to step batch status (FAILED)-->
  <next on="FAILED" to="RecoveryStep"/>
-
-<fail on="*"/>
-
+ <fail on="*"/>
 </step>
 ----
 
@@ -1978,24 +2123,24 @@ as described in section xref:_validation_rules[13.1], or may only detect loops o
 
 ==== Transitioning From Within Flows
 
-As mentioned in section xref:_flow[8.3], an execution element which is a child of a
+. As mentioned in section xref:_flow[8.3], an execution element which is a child of a
 flow may only transition to another execution element within the same
 flow. The flows transition elements, however, would transition execution
 to the next execution element at the level of the execution scope
 containing the flow ,E.g. the job.
 
-For terminating transitions (stop, end, fail) as well as failures caused
+. For terminating transitions (stop, end, fail) as well as failures caused
 by unhandled exceptions, it is the entire job execution which is
 terminated. It is not just the case that the flow alone is somehow
 failed or ended yet with another level of transitioning occurring at the
 containing (e.g. job) level.
 
-1.  Note: transition via next outside of the flow is not permitted. If
+.. Note: transition via next outside of the flow is not permitted. If
 this is not detected during job validation (see section xref:_validation_rules[13.1]), then at
 runtime the job execution will end at this point with batch status of
 FAILED.
 
-When a child of a flow completes normally, and when there are no
+. When a child of a flow completes normally, and when there are no
 matching transition elements as well as no next attribute at the level
 of this child of a flow, then the flow ends.
 
@@ -2007,8 +2152,7 @@ the job).
 
 See the example at the end of section xref:_flow_level_transitions[8.9.5] for further clarification.
 
-==== Flow-level Transitions
-Undefined
+==== Flow-level Transitions Undefined
 
 It is recognized that the specification is incomplete with respect to
 how exactly flow transition elements are evaluated. Though the list in
@@ -2026,40 +2170,25 @@ the flow element is well-defined at the current spec level, and is
 suggested.
 
 Example:
+[source,xml]
 ----
 <flow id="Flow1" next="StepX">
-
-<step id="FS1">
-
-<next on="RC1" to="FS2A"/>
-
-<next on="RC2" to="FS2B"/>
-
-<!-- ILLEGAL - would be illegal, since one can only transition within
-the flow
-
-<next on="RC3" to="StepX"/>
-
--->
-
-</step>
-
-<step id="FS2A" >
-
-<fail on="FAILED"/> <!-- FAILS job, doesn't "fail flow"-->
-
-</step>
-
-<step id="FS2B" >
-
-<fail on="FAILED"/> <!-- FAILS job, doesn't "fail flow"-->
-
-</step>
-
-<next on="F*" to="StepY"/> <!-- UNDEFINED -->
-
+ <step id="FS1">
+ <next on="RC1" to="FS2A"/>
+ <next on="RC2" to="FS2B"/>
+ <!-- ILLEGAL - would be illegal, since one can only transition within the flow
+ <next on="RC3" to="StepX"/>
+ -->
+ </step>
+ <step id="FS2A" >
+  <fail on="FAILED"/> <!-- FAILS job, doesn't "fail flow"-->
+ </step>
+ <step id="FS2B" >
+  <fail on="FAILED"/> <!-- FAILS job, doesn't "fail flow"-->
+ </step>
+ <next on="F*" to="StepY"/> <!-- UNDEFINED -->
 </flow>
- <step id="StepX">
+<step id="StepX">
 
 ----
 

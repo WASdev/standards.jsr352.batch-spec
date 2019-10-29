@@ -24,7 +24,7 @@ other two are ItemProcessor and ItemWriter.
 The ItemReader interface may be used to implement an ItemReader batch
 artifact:
 
-[[app-listing]]
+[[app-listing.ItemReader.java]]
 [source,java]
 .ItemReader.java
 ----
@@ -82,7 +82,7 @@ public interface ItemReader {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractItemReader.java]]
 [source,java]
 .AbstractItemReader.java
 ----
@@ -119,7 +119,7 @@ type step. The other two are ItemReader and ItemWriter.
 The ItemProcessor interface may be used to implement an ItemProcessor
 batch artifact:
 
-[[app-listing]]
+[[app-listing.ItemProcessor.java]]
 [source,java]
 .ItemProcessor.java
 ----
@@ -156,7 +156,7 @@ chunk type step. The other two are ItemProcessor and ItemReader.
 The ItemWriter interface may be used to implement an ItemWriter batch
 artifact:
 
-[[app-listing]]
+[[app-listing.ItemWriter.java]]
 [source,java]
 .ItemWriter.java
 ----
@@ -214,7 +214,7 @@ public interface ItemWriter {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractItemWriter.java]]
 [source,java]
 .AbstractItemWriter.java
 ----
@@ -279,7 +279,7 @@ A CheckpointAlgorithm implements a custom checkpoint policy for a chunk
 step. The CheckpointAlgorithm interface may be used to implement an
 CheckpointAlgorithm batch artifact:
 
-[[app-listing]]
+[[app-listing.CheckpointAlgorithm.java]]
 [source,java]
 .CheckpointAlgorithm.java
 ----
@@ -336,7 +336,7 @@ public interface CheckpointAlgorithm {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractCheckpointAlgorithm.java]]
 [source,java]
 .AbstractCheckpointAlgorithm.java
 ----
@@ -406,7 +406,7 @@ status.
 The Batchlet interface may be used to implement a Batchlet batch
 artifact:
 
-[[app-listing]]
+[[app-listing.Batchlet.java]]
 [source,java]
 .Batchlet.java
 ----
@@ -448,7 +448,7 @@ public interface Batchlet {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractBatchlet.java]]
 [source,java]
 .AbstractBatchlet.java
 ----
@@ -481,7 +481,8 @@ public abstract class AbstractBatchlet implements Batchlet {
 }
 ----
 
-image::images/image010.png[image]
+TIP: A well designed batchlet stops gracefully when the JobOperator.stop operation is invoked.  
+See section xref:_stop_processing[11.13] for further information about stop processing.
 
 === Listeners
 Use Listeners to interpose on batch execution.
@@ -492,7 +493,7 @@ and also if an exception is thrown during job processing. The
 JobListener interface may be used to implement an JobListener batch
 artifact:
 
-[[app-listing]]
+[[app-listing.JobListener.java]]
 [source,java]
 .JobListener.java
 ----
@@ -517,7 +518,7 @@ public interface JobListener {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractJobListener.java]]
 [source,java]
 .AbstractJobListener.java
 ----
@@ -557,7 +558,7 @@ A step listener can receive control before and after a step runs, and
 also if an exception is thrown during step processing. The StepListener
 interface may be used to implement an StepListener batch artifact:
 
-[[app-listing]]
+[[app-listing.StepListener.java]]
 [source,java]
 .StepListener.java
 ----
@@ -582,7 +583,7 @@ public interface StepListener {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractStepListener.java]]
 [source,java]
 .AbstractStepListener.java
 ----
@@ -623,7 +624,7 @@ chunk, and upon an exception thrown back to the runtime implementation.
 The ChunkListener interface may be used to implement a ChunkListener
 batch artifact:
 
-[[app-listing]]
+[[app-listing.ChunkListener.java]]
 [source,java]
 .ChunkListener.java
 ----
@@ -663,7 +664,7 @@ public interface ChunkListener {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractChunkListener.java]]
 [source,java]
 .AbstractChunkListener.java
 ----
@@ -715,7 +716,7 @@ read by an item reader, and also if the reader throws an exception. The
 ItemReadListener interface may be used to implement an ItemReadListener
 batch artifact:
 
-[[app-listing]]
+[[app-listing.ItemReadListener.java]]
 [source,java]
 .ItemReadListener.java
 ----
@@ -751,7 +752,7 @@ public interface ItemReadListener {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractItemReadListener.java]]
 [source,java]
 .AbstractItemReadListener.java
 ----
@@ -805,7 +806,7 @@ exception. The ItemProcessListener interface may be used to implement an
 ItemProcessListener batch artifact:
 
 
-[[app-listing]]
+[[app-listing.ItemProcessListener.java]]
 [source,java]
 .ItemProcessListener.java
 ----
@@ -846,7 +847,7 @@ public interface ItemProcessListener {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractItemProcessListener.java]]
 [source,java]
 .AbstractItemProcessListener.java
 ----
@@ -908,7 +909,7 @@ written by an item writer, and also if the writer throws an exception.
 The ItemWriteListener interface may be used to implement an
 ItemWriteListener batch artifact:
 
-[[app-listing]]
+[[app-listing.ItemWriteListener.java]]
 [source,java]
 .ItemWriteListener.java
 ----
@@ -958,7 +959,7 @@ A skip listener can receive control when a skippable exception is
 thrown from an item reader, processor, or writer. Three interfaces are
 provided to implement these listeners:
 
-[[app-listing]]
+[[app-listing.SkipReadListener.java]]
 [source,java]
 .SkipReadListener.java
 ----
@@ -980,7 +981,7 @@ public interface SkipReadListener {
 }
 ----
 
-[[app-listing]]
+[[app-listing.SkipProcessListener.java]]
 [source,java]
 .SkipProcessListener.java
 ----
@@ -1006,7 +1007,7 @@ public interface SkipProcessListener {
 }
 ----
 
-[[app-listing]]
+[[app-listing.SkipWriteListener.java]]
 [source,java]
 .SkipWriteListener.java
 ----
@@ -1040,7 +1041,7 @@ A retry listener can receive control when a retryable exception is
 thrown from an item reader, processor, or writer. Three interfaces are
 provided to implement these listeners:
 
-[[app-listing]]
+[[app-listing.RetryReadListener.java]]
 [source,java]
 .RetryReadListener.java
 ----
@@ -1066,7 +1067,7 @@ public interface RetryReadListener {
 }
 ----
 
-[[app-listing]]
+[[app-listing.RetryProcessListener.java]]
 [source,java]
 .RetryProcessListener.java
 ----
@@ -1094,7 +1095,7 @@ public interface RetryProcessListener {
 ----
 
 
-[[app-listing]]
+[[app-listing.RetryWriteListener.java]]
 [source,java]
 .RetryWriteListener.java
 ----
@@ -1151,7 +1152,7 @@ property values from Job XML to the batch artifact itself.
 A field annotated with the @BatchProperty annotation must not be static
 and must not be final.
 
- Note: the batch runtime must ensure @Inject works with @BatchProperty,
+Note: the batch runtime must ensure @Inject works with @BatchProperty,
 whether or not the execution environment includes an implementation of
 JSR 299 or 330. This means the batch properties may always be injected.
 Whether or not other injections are supported is dependent upon the
@@ -1159,7 +1160,7 @@ batch runtime implementation.
 
 Syntax:
 
-[[app-listing]]
+[[app-listing.batchProperty]]
 [source,java]
 ----
  package: javax.batch.api
@@ -1177,7 +1178,7 @@ default is the Java field name.
 |<field-name> |is the field name of the batch property.
 |=======================================================================
 
-[[app-listing]]
+[[app-listing.BatchProperty.java]]
 [source,java]
 .BatchProperty.java
 ----
@@ -1221,12 +1222,12 @@ technology used in the runtime environment and so is outside the scope
 of this specification.
 Example:
 
-[[app-listing]]
+[[app-listing.BatchPropertySample]]
 [source,java]
 ----
  import javax.inject.Inject;
  import javax.batch.api.BatchProperty;
- public class MyItemReaderImpl \{
+ public class MyItemReaderImpl {
 
 @Inject @BatchProperty String fname;
 
@@ -1243,8 +1244,7 @@ to the corresponding @BatchProperty field named fname. If no value is
 defined in JSL, the Java default (null) is assigned or some other
 default is provided by a particular dependency injection technology.
 
-==== Scope of property definitions for @BatchProperty
-injection
+==== Scope of property definitions for @BatchProperty Injection
 
 The rules governing the definition of properties for injection via
 @BatchProperty deserve some extra explanation and an example.
@@ -1266,33 +1266,25 @@ definitions via the jobProperties substitution mechanism (see section
 
 The following example should make this more clear:
 
-[[app-listing]]
+[[app-listing.BatchPropertyXML]]
 [source,xml]
 .Example JSL
 ----
 <job>
+ <properties>
+ <property name="x" value="xVal"/>
+ ...
+ <step id="step1">
+  <batchlet ref="MyBatchlet">
+   <properties>
+    <property name="y" value="#\{jobProperties['x']}"/>
+   </properties>
 
-<properties>
-
-<property name="x" value="xVal"/>
-
-...
-
-<step id="step1">
-
-<batchlet ref="MyBatchlet">
-
-<properties>
-
-<property name="y" value="#\{jobProperties['x']}"/>
-
-</properties>
-</job>
 ----
 
 *Example Java (MyBatchlet from JSL above):*
 
-[[app-listing]]
+[[app-listing.BadBatchProperty]]
 [source,java]
 ----
  // WONT WORK! - There is no property 'x' in scope for this injection
@@ -1347,7 +1339,7 @@ There is one JobContext per job execution. It exists for the life of a
 job. There is a distinct JobContext for each sub-thread of a parallel
 execution (e.g. partitioned step).
 
-2.  StepContext+
+2.  StepContext +
 +
 There is one StepContext per step execution. It exists for the life of
 the step. For a partitioned step, there is one StepContext for the
@@ -1360,29 +1352,29 @@ sub-thread.
 Batch jobs may be configured to run some of their steps in parallel.
 There are two supported parallelization models:
 
-Partitioned:
-
+. Partitioned:
++
 In the partitioned model, a step is configured to run as multiple
 instances across multiple threads. Each thread runs the same step or
 flow. This model is logically equivalent to launching multiple instances
 of the same step. It is intended that each partition processes a
 different range of the input items.
-
++
 The partitioned model includes several optional batch artifacts to
 enable finer control over parallel processing:
-
-1.  PartitionMapper provides a programmatic means for calculating the
++
+.. PartitionMapper provides a programmatic means for calculating the
 number of partitions and unique properties for each.
-2.  PartitionReducer provides a unit of work demarcation around
+.. PartitionReducer provides a unit of work demarcation around
 partition processing.
-3.  PartitionCollector provides a means for merging interrim results
+.. PartitionCollector provides a means for merging interrim results
 from individual partitions.
-4.  PartitionAnalyzer provides a means to gather interrim and final
+.. PartitionAnalyzer provides a means to gather interrim and final
 results from individual partitions for single point of control
 processing and decision making.
 
-Concurrent:
-
+. Concurrent:
++
 In the concurrent model, the flows defined by a split are configured to
 run concurrently on multiple threads, one flow per thread.
 
@@ -1392,7 +1384,7 @@ execution. The partition mapper is responsible to provide unique batch
 properties for each partition. The PartitionMapper interface may be used
 to implement a PartitionMapper batch artifact:
 
-[[app-listing]]
+[[app-listing.PartitionMapper.java]]
 [source,java]
 .PartitionMapper.java
 ----
@@ -1432,15 +1424,14 @@ Rather, it provides transactional flow semantics to facilitate
 finalizing merge or compensation logic. The PartitionReducer interface
 may be used to implement an PartitionReducer batch artifact:
 
-[[app-listing]]
+[[app-listing.PartitionReducer.java]]
 [source,java]
 .PartitionReducer.java
 ----
 package javax.batch.api.partition;
 /**
 * PartitionReducer provides unit of work demarcation across
-* partitions. It is not a JTA transaction;
-no resources are
+* partitions. It is not a JTA transaction; no resources are
 * enlisted. Rather, it provides transactional flow semantics
 * to facilitate finalizing merge or compensation logic.
 *
@@ -1504,7 +1495,7 @@ public interface PartitionReducer {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractPartitionReducer.java]]
 [source,java]
 .AbstractPartitionReducer.java
 ----
@@ -1566,7 +1557,7 @@ section xref:_partitionanalyzer_interface[9.5.4] for further information about t
 PartitionCollector interface may be used to implement an
 PartitionCollector batch artifact:
 
-[[app-listing]]
+[[app-listing.PartitionCollector.java]]
 [source,java]
 .PartitionCollector.java
 ----
@@ -1617,9 +1608,9 @@ runs on a single, consistent thread each time it is invoked. The
 PartitionAnalyzer interface may be used to implement an
 PartitionAnalyzer batch artifact:
 
-[[app-listing]]
+[[app-listing.PartitionAnalyzer.java]]
 [source,java]
-.PartitionCollector.java
+.PartitionAnalyzer.java
 ----
 package javax.batch.api.partition;
 import java.io.Serializable;
@@ -1662,7 +1653,7 @@ public interface PartitionAnalyzer {
 }
 ----
 
-[[app-listing]]
+[[app-listing.AbstractPartitionAnalyzer.java]]
 [source,java]
 .AbstractPartitionAnalyzer.java
 ----
@@ -1709,7 +1700,7 @@ String value which becomes the exit status value on which the decision
 chooses the next transition. The Decider interface may be used to
 implement an Decider batch artifact:
 
-[[app-listing]]
+[[app-listing.Decider.java]]
 [source,java]
 .Decider.java
 ----
@@ -1772,10 +1763,11 @@ step-level with a step-level property:
 seconds'
 
 Example:
+[source,xml]
 ----
  <step id="MyGlobalStep">
- <properties>
- <property name="javax.transaction.global.timeout" value="600"/>
- </properties>
+  <properties>
+   <property name="javax.transaction.global.timeout" value="600"/>
+  </properties>
  </step>
 ----

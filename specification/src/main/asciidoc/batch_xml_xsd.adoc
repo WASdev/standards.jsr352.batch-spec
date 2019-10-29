@@ -1,6 +1,6 @@
 == Batch XML XSD
 
-[[app-listing]]
+[[app-listing.batch_xml_xsd]]
 [source,xml]
 ----
 <xml version="1.0" encoding="UTF-8">
